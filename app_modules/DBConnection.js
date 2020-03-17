@@ -5,7 +5,7 @@ var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
     password : 'root',
-    database : 'node_test_db'
+    database : 'node_leaderboard_lite'
 });
 
 connection.connect(function(err) {
