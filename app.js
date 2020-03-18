@@ -8,6 +8,7 @@ var app = express();
 // middleware parsing body of the post form data
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
+//catch all calls to ldb and send them to leaderboard router!!
 app.use('/ldb', leaderboardRouter);
 
 // catch everything not catched before as a 404 and forward to error handler

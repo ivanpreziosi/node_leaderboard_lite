@@ -12,11 +12,11 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 
--- Dump della struttura del database node_test_db
-CREATE DATABASE IF NOT EXISTS `node_test_db` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `node_test_db`;
+-- Dump della struttura del database node_leaderboard_lite
+CREATE DATABASE IF NOT EXISTS `node_leaderboard_lite` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `node_leaderboard_lite`;
 
--- Dump della struttura di tabella node_test_db.leaderboard
+-- Dump della struttura di tabella node_leaderboard_lite.leaderboard
 CREATE TABLE IF NOT EXISTS `leaderboard` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL DEFAULT 'Unknown',
