@@ -30,10 +30,10 @@ router.get('/', function (req, res, next) {
       console.log("query executed");
 
       var leaderboardResponse = {
-        STATUS: "OK",
-        MESSAGE: "Leaderboard successfully retrieved",
-        CODE: "LEADERBOARD-RETRIEVED-SUCCESS",
-        PAYLOAD: result
+        status: "OK",
+        message: "Leaderboard successfully retrieved",
+        code: "LEADERBOARD-RETRIEVED-SUCCESS",
+        payload: result
       }
 
       //write to result object
@@ -92,10 +92,9 @@ router.post('/save',
           console.log("hiscore inserted");
          
           var leaderboardResponse = {
-            STATUS: "OK",
-            MESSAGE: "Hiscore inserted",
-            CODE: "LEADERBOARD-INSERTED-SUCCESS",
-            PAYLOAD: result
+            status: "OK",
+            message: "Hiscore inserted",
+            code: "LEADERBOARD-INSERTED-SUCCESS"
           }
 
           //write to result object

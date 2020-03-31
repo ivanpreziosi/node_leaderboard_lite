@@ -11,10 +11,10 @@ using UnityEngine;
 [Serializable]
 public class LeaderBoardResponse
 {
-    public string STATUS;
-    public string MESSAGE;
-    public string CODE;
-    public List<LeaderBoardItem> PAYLOAD;
+    public string status;
+    public string message;
+    public string code;
+    public List<LeaderBoardItem> payload;
 }
 
 [Serializable]

@@ -46,9 +46,9 @@ public class LeaderBoardApiClient : MonoBehaviour
             Debug.LogError("Error posting: " + download.error);
 
             LeaderBoardResponse apiResponse = new LeaderBoardResponse();
-            apiResponse.STATUS = "KO";
-            apiResponse.CODE = "UPLOAD-HTTP-ERROR";
-            apiResponse.MESSAGE = download.error;
+            apiResponse.status = "KO";
+            apiResponse.code = "UPLOAD-HTTP-ERROR";
+            apiResponse.message = download.error;
             caller.ReturnLeaderboardCallback(apiResponse);
         }
         else
@@ -74,9 +74,9 @@ public class LeaderBoardApiClient : MonoBehaviour
         {
             LeaderBoardResponse apiResponse = new LeaderBoardResponse();
             Debug.LogError("Error downloading: " + webRequest.error);
-            apiResponse.STATUS = "KO";
-            apiResponse.CODE = "RETRIEVE-HTTP-ERROR";
-            apiResponse.MESSAGE = webRequest.error;
+            apiResponse.status = "KO";
+            apiResponse.code = "RETRIEVE-HTTP-ERROR";
+            apiResponse.message = webRequest.error;
             caller.ReturnLeaderboardCallback(apiResponse);
         }
         else
