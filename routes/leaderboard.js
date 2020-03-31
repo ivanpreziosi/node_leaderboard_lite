@@ -12,25 +12,33 @@ router.get('/', function (req, res, next) {
   //GET PARAM in query string
   var limit = req.param("limit");
 
-  console.log("limit: "+limit);
-  
-  if(limit === undefined ){
+  console.log("limit: " + limit);
+
+  if (limit === undefined) {
     limit = 50;
   }
 
-  console.log("limit: "+limit);
+  console.log("limit: " + limit);
 
   var sql = "SELECT l.username, l.score, l.save_date FROM leaderboard l WHERE is_deleted = 0 ORDER BY score DESC LIMIT ?";
-  con.query(sql,[parseInt(limit)], function (query_err, result, fields) {
+  con.query(sql, [parseInt(limit)], function (query_err, result, fields) {
 
     if (query_err) {
       console.log("ERR")
       next(query_err);
     } else {
       console.log("query executed");
+
+      var leaderboardResponse = {
+        STATUS: "OK",
+        MESSAGE: "Leaderboard successfully retrieved",
+        CODE: "LEADERBOARD-RETRIEVED-SUCCESS",
+        PAYLOAD: result
+      }
+
       //write to result object
       res.writeHead(200, { 'Content-Type': 'text/json' });
-      res.write(JSON.stringify(result));
+      res.write(JSON.stringify(leaderboardResponse));
       res.end();
     }
 
@@ -49,21 +57,21 @@ router.post('/save',
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      
+
       console.log(JSON.stringify(errors));
 
       var errorString = "Errors: ";
       var isFirst = true;
       errors.array().forEach(element => {
-        if(!isFirst){
-          errorString += " - ";          
+        if (!isFirst) {
+          errorString += " - ";
         }
         errorString += element.param + ": " + element.msg;
         isFirst = false;
       });
 
       //create 400 http error code: Bad Request
-      next(createError(400,errorString));
+      next(createError(400, errorString));
 
     } else {
       // SAVING HISCORE
@@ -73,24 +81,29 @@ router.post('/save',
       var score = req.body.score;
 
       var con = require('../app_modules/DBConnection');
-      var sql = "INSERT INTO `leaderboard` (`username`, `score`) VALUES (?, ?);";
+      var sql = "INSERT INTO `leaderboard` (`username`, `score`) VALUES (?,?);";
 
-      con.query(sql, [username,score], function (query_err, result, fields) {
+      con.query(sql, [username, score], function (query_err, result, fields) {
 
         if (query_err) {
           console.log("ERR")
           next(query_err);
         } else {
           console.log("hiscore inserted");
-          //adding custom data
-          result.MESSAGE = "Hiscore inserted";
-          result.STATUS = "OK";
+         
+          var leaderboardResponse = {
+            STATUS: "OK",
+            MESSAGE: "Hiscore inserted",
+            CODE: "LEADERBOARD-INSERTED-SUCCESS",
+            PAYLOAD: result
+          }
+
           //write to result object
           res.writeHead(200, { 'Content-Type': 'text/json' });
-          res.write(JSON.stringify(result));
+          res.write(JSON.stringify(leaderboardResponse));
           res.end();
         }
-    
+
       });
     }
   });
