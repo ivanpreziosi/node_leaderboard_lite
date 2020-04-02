@@ -26,7 +26,7 @@ router.get('/', function (req, res, next) {
 
   } else {
 
-    if (validator.isNumeric("limit") || validator.isInt("limit", { min: 1, max: 150 })) {
+    if (!validator.isNumeric(limit) || !validator.isInt(limit, { min: 1, max: 150 })) {
       validationErrString += "limit must be an integer: min 1, max 150 \n";
     }
   }
@@ -39,7 +39,7 @@ router.get('/', function (req, res, next) {
 
   } else {
 
-    if (validator.isNumeric("offset") || validator.isInt("offset", { min: 0 })) {
+    if (!validator.isNumeric(offset) || !validator.isInt(offset, { min: 0 })) {
       validationErrString += "offset must be an integer: min 0 \n";
     }
 
@@ -55,11 +55,11 @@ router.get('/', function (req, res, next) {
   /////////////////////////////////////
 
 
-
   if (validationErrString !== "") {
 
     //validation KO
     //create 400 http error code: Bad Request
+  
     next(createError(400, validationErrString));
 
   } else {

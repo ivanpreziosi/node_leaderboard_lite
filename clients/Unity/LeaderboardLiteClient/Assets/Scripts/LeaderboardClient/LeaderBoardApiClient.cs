@@ -59,31 +59,48 @@ public class LeaderBoardApiClient : MonoBehaviour
     }
 
 
-    public void RetrieveList(ILeaderBoardCaller caller)
+    public void RetrieveList(ILeaderBoardCaller caller, string limit = "50", string offset = "0", string order = "DESC")
     {
-        StartCoroutine(DoRetrieveList(caller));
+        if (limit == "")
+            limit = "50";
+
+        if (offset == "")
+            offset = "0";
+
+        if (order == "")
+            order = "DESC";
+
+        StartCoroutine(DoRetrieveList(caller, limit, offset, order));
     }
 
-    IEnumerator DoRetrieveList(ILeaderBoardCaller caller)
+    IEnumerator DoRetrieveList(ILeaderBoardCaller caller, string limit = "50", string offset = "0", string order = "DESC")
     {
-        var webRequest = UnityWebRequest.Get(API_URL);
+        string queryString = "?limit="+limit+"&offset="+offset+"&order="+order;
 
-        yield return webRequest.SendWebRequest();        
+        Debug.Log(API_URL + queryString);
 
-        if (webRequest.isNetworkError || webRequest.isHttpError)
-        {
-            LeaderBoardResponse apiResponse = new LeaderBoardResponse();
-            Debug.LogError("Error downloading: " + webRequest.error);
+        var webRequest = UnityWebRequest.Get(API_URL + queryString);
+
+        yield return webRequest.SendWebRequest();
+        LeaderBoardResponse apiResponse = new LeaderBoardResponse();
+
+        if (webRequest.isNetworkError)
+        {            
             apiResponse.status = "KO";
-            apiResponse.code = "RETRIEVE-HTTP-ERROR";
+            apiResponse.code = "RETRIEVE-NETWORK-ERROR";
             apiResponse.message = webRequest.error;
-            caller.ReturnLeaderboardCallback(apiResponse);
+        }
+        else if (webRequest.isHttpError)
+        {
+            string jsonData = webRequest.downloadHandler.text;
+            apiResponse = JsonUtility.FromJson<LeaderBoardResponse>(jsonData);
         }
         else
         {
             string jsonData = webRequest.downloadHandler.text;
-            LeaderBoardResponse apiResponse = JsonUtility.FromJson<LeaderBoardResponse>(jsonData);
-            caller.ReturnLeaderboardCallback(apiResponse);
+            apiResponse = JsonUtility.FromJson<LeaderBoardResponse>(jsonData);
+            
         }
+        caller.ReturnLeaderboardCallback(apiResponse);
     }
 }
