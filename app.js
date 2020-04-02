@@ -26,8 +26,9 @@ app.use(function(err, req, res, next) {
   // render the error message (500 defaults to internal error)
   res.status(err.status || 500);
   res.json({
-    "MESSAGE": err.message,
-    "STATUS": "KO"
+    "status": "KO",
+    "message": err.message,
+    "code": "ERROR-HANDLE-"+(err.status || 500)
   });
   res.end();
   
