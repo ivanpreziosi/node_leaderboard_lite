@@ -90,11 +90,6 @@ public class LeaderBoardApiClient : MonoBehaviour
             apiResponse.code = "RETRIEVE-NETWORK-ERROR";
             apiResponse.message = webRequest.error;
         }
-        else if (webRequest.isHttpError)
-        {
-            string jsonData = webRequest.downloadHandler.text;
-            apiResponse = JsonUtility.FromJson<LeaderBoardResponse>(jsonData);
-        }
         else
         {
             string jsonData = webRequest.downloadHandler.text;
