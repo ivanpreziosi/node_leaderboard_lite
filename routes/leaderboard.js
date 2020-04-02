@@ -46,13 +46,13 @@ router.get('/', function (req, res, next) {
   }
   /////////////////////////////////////
 
-    //validate order//////////////////////
-    if (order !== "ASC") {
-      //order può avere solo due valori: ASC o DESC.
-      order = "DESC";
-  
-    } 
-    /////////////////////////////////////
+  //validate order//////////////////////
+  if (order !== "ASC") {
+    //order può avere solo due valori: ASC o DESC.
+    order = "DESC";
+
+  }
+  /////////////////////////////////////
 
 
 
@@ -63,9 +63,9 @@ router.get('/', function (req, res, next) {
     next(createError(400, validationErrString));
 
   } else {
-    
+
     //validation OK
-    var sql = "SELECT l.username, l.score, l.save_date FROM leaderboard l WHERE is_deleted = 0 ORDER BY score "+order+" LIMIT ?,?";
+    var sql = "SELECT l.username, l.score, l.save_date FROM leaderboard l WHERE is_deleted = 0 ORDER BY score " + order + " LIMIT ?,?";
     con.query(sql, [parseInt(offset), parseInt(limit)], function (query_err, result, fields) {
 
       if (query_err) {
