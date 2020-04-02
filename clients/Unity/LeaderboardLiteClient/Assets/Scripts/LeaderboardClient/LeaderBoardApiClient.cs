@@ -41,7 +41,7 @@ public class LeaderBoardApiClient : MonoBehaviour
 
 
 
-        if (download.isNetworkError || download.isHttpError)
+        if (download.isNetworkError)
         {
             Debug.LogError("Error posting: " + download.error);
 
