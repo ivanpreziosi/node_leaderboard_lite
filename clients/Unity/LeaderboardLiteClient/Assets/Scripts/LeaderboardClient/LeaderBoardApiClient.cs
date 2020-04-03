@@ -40,7 +40,6 @@ public class LeaderBoardApiClient : MonoBehaviour
         yield return download.SendWebRequest();
 
 
-
         if (download.isNetworkError)
         {
             Debug.LogError("Error posting: " + download.error);
