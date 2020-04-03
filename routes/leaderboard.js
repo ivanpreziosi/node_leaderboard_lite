@@ -5,7 +5,7 @@ const { check, validationResult } = require('express-validator');
 var validator = require('validator');
 
 
-/* GET users listing. */
+/* GET score listing. */
 router.get('/', function (req, res, next) {
 
   var con = require('../app_modules/DBConnection');
