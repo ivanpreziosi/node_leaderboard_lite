@@ -2,6 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 
 var leaderboardRouter = require('./routes/leaderboard');
+var userRouter = require('./routes/user');
 
 var app = express();
 
@@ -10,6 +11,9 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 
 //catch all calls to ldb and send them to leaderboard router!!
 app.use('/ldb', leaderboardRouter);
+
+//routing delle funzioni per gli endpoint di usr
+app.use('/usr', userRouter);
 
 // catch everything not catched before as a 404 and forward to error handler
 app.use(function(req, res, next) {
