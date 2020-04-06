@@ -1,104 +1,99 @@
 var express = require('express');
 var router = express.Router();
 var createError = require('http-errors');
-const { check, validationResult } = require('express-validator');
+const { body, query, header, validationResult } = require('express-validator');
 var validator = require('validator');
 
 
 /* GET score listing. */
-router.get('/', function (req, res, next) {
+router.get('/',
+  [ //express-validator rules stack
+    query('limit')
+      .customSanitizer((value, { req }) => { return (value !== undefined && value !== "") ? value : 50 })
+      .isNumeric().withMessage('has to be numeric')
+      .bail()
+      .isInt({ min: 1, max: 150 }).withMessage('must be an integer (min:1, max:150)'),
 
-  var con = require('../app_modules/DBConnection');
+    query('offset')
+      .customSanitizer((value, { req }) => { return (value !== undefined && value !== "") ? value : 0 })
+      .isNumeric().withMessage('has to be numeric')
+      .bail()
+      .isInt({ min: 0 }).withMessage('must be an integer (min:0)')
+  ],
+  function (req, res, next) {
 
-  //GET PARAM in query string
-  var limit = req.query.limit;
-  var offset = req.query.offset;
-  var order = req.query.order;
+    var con = require('../app_modules/DBConnection');
 
+    //GET PARAM in query string
+    var limit = req.query.limit;
+    var offset = req.query.offset;
+    var order = (req.query.order=='ASC')?'ASC':'DESC';
 
-  var validationErrString = "";
+    //VALIDATION CHECK
+    const errors = validationResult(req);
 
+    if (!errors.isEmpty()) {
 
-  //validate limit//////////////////////////
-  if (limit === undefined) {
+      console.log(JSON.stringify(errors));
 
-    limit = 50;
+      var errorString = "Errors: ";
+      var isFirst = true;
+      errors.array().forEach(element => {
+        if (!isFirst) {
+          errorString += " - ";
+        }
+        errorString += element.param + ": " + element.msg;
+        isFirst = false;
+      });
 
-  } else {
+      //create 400 http error code: Bad Request
+      next(createError(400, errorString));
 
-    if (!validator.isNumeric(limit) || !validator.isInt(limit, { min: 1, max: 150 })) {
-      validationErrString += "limit must be an integer: min 1, max 150 \n";
-    }
-  }
-  ////////////////////////////////////////
+    } else {
 
-  //validate offset//////////////////////
-  if (offset === undefined) {
+      //validation OK
+      var sql = "SELECT u.username, l.score, l.save_date FROM leaderboard l LEFT OUTER JOIN user u on l.user_id = u.id WHERE l.is_deleted = 0 AND u.is_deleted = 0 ORDER BY score " + order + " LIMIT ?,?";
+      con.query(sql, [parseInt(offset), parseInt(limit)], function (query_err, result, fields) {
 
-    offset = 0;
+        if (query_err) {
+          console.log("ERR")
+          next(query_err);
+        } else {
+          console.log("query executed");
 
-  } else {
+          var leaderboardResponse = {
+            status: "OK",
+            message: "Leaderboard successfully retrieved",
+            code: "LEADERBOARD-RETRIEVED-SUCCESS",
+            payload: result
+          }
 
-    if (!validator.isNumeric(offset) || !validator.isInt(offset, { min: 0 })) {
-      validationErrString += "offset must be an integer: min 0 \n";
-    }
-
-  }
-  /////////////////////////////////////
-
-  //validate order//////////////////////
-  if (order !== "ASC") {
-    //order può avere solo due valori: ASC o DESC.
-    order = "DESC";
-
-  }
-  /////////////////////////////////////
-
-
-  if (validationErrString !== "") {
-
-    //validation KO
-    //create 400 http error code: Bad Request
-  
-    next(createError(400, validationErrString));
-
-  } else {
-
-    //validation OK
-    var sql = "SELECT l.username, l.score, l.save_date FROM leaderboard l WHERE is_deleted = 0 ORDER BY score " + order + " LIMIT ?,?";
-    con.query(sql, [parseInt(offset), parseInt(limit)], function (query_err, result, fields) {
-
-      if (query_err) {
-        console.log("ERR")
-        next(query_err);
-      } else {
-        console.log("query executed");
-
-        var leaderboardResponse = {
-          status: "OK",
-          message: "Leaderboard successfully retrieved",
-          code: "LEADERBOARD-RETRIEVED-SUCCESS",
-          payload: result
+          //write to result object
+          res.writeHead(200, { 'Content-Type': 'text/json' });
+          res.write(JSON.stringify(leaderboardResponse));
+          res.end();
         }
 
-        //write to result object
-        res.writeHead(200, { 'Content-Type': 'text/json' });
-        res.write(JSON.stringify(leaderboardResponse));
-        res.end();
-      }
-
-    });
-  }
+      });
+    }
 
 
 
-});
+  });
 
 /* POST a new hiscore to the leaderboard */
 router.post('/save',
   [ //express-validator rules stack
-    check('username').notEmpty().withMessage('is required').isLength({ min: 3, max: 50 }).withMessage('must be at least 3 chars long and not longer than 50 chars'),
-    check('score').notEmpty().withMessage('is required').isNumeric().withMessage('must be numeric').isInt().withMessage('must be an integer')
+    body('score')
+      .exists().withMessage('is required')
+      .bail()
+      .trim()
+      .notEmpty().withMessage('is required')
+      .bail()
+      .isNumeric()
+      .withMessage('has to be numeric')
+      .isInt()
+      .withMessage('must be an integer')
   ],
   function (req, res, next) {
 
@@ -123,16 +118,19 @@ router.post('/save',
       next(createError(400, errorString));
 
     } else {
+      // GETTING THE USER FROM HEADER DATA
+      var hUsername = req.header('username');
+      var hToken = req.header('x-ldb-token');
+
       // SAVING HISCORE
       console.log("saving score");
 
-      var username = req.body.username;
       var score = req.body.score;
 
       var con = require('../app_modules/DBConnection');
-      var sql = "INSERT INTO `leaderboard` (`username`, `score`) VALUES (?,?);";
+      var sql = "INSERT INTO `leaderboard` (`user_id`, `score`) VALUES ((SELECT id FROM user WHERE username = ? AND auth_token = ?),?);";
 
-      con.query(sql, [username, score], function (query_err, result, fields) {
+      con.query(sql, [hUsername, hToken, score], function (query_err, result, fields) {
 
         if (query_err) {
           console.log("ERR")
@@ -151,7 +149,6 @@ router.post('/save',
           res.write(JSON.stringify(leaderboardResponse));
           res.end();
         }
-
       });
     }
   });
