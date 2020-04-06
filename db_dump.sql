@@ -25,7 +25,24 @@ CREATE TABLE IF NOT EXISTS `leaderboard` (
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
   `sender_ip` varchar(50) NOT NULL DEFAULT 'Unknown',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella node_leaderboard_lite.user
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password` char(32) NOT NULL DEFAULT '',
+  `email` varchar(60) NOT NULL,
+  `is_deleted` tinyint(4) NOT NULL DEFAULT 0,
+  `date_subscribed` datetime NOT NULL DEFAULT current_timestamp(),
+  `auth_token` char(32) DEFAULT NULL,
+  `token_creation_date` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- L’esportazione dei dati non era selezionata.
 

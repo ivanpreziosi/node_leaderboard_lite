@@ -1,6 +1,8 @@
 var createError = require('http-errors');
 var express = require('express');
 
+var Auth = require('./app_modules/AuthModule');
+
 var leaderboardRouter = require('./routes/leaderboard');
 var userRouter = require('./routes/user');
 
@@ -8,6 +10,10 @@ var app = express();
 
 // middleware parsing body of the post form data
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+app.use('/ldb',function (req, res, next) {
+  Auth.checkAuth(req, res, next);
+});
 
 //catch all calls to ldb and send them to leaderboard router!!
 app.use('/ldb', leaderboardRouter);
