@@ -7,7 +7,9 @@ public class LeaderBoardApiClient : MonoBehaviour
 {
     public static LeaderBoardApiClient instance;
 
-    public const string API_URL = "http://localhost:1312/ldb/";
+    public UserData loggedUser;
+
+    public const string API_URL = "http://localhost:1312/";
 
     void Awake()
     {
@@ -23,52 +25,132 @@ public class LeaderBoardApiClient : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void UploadScore(ILeaderBoardCaller caller, string username = "unknown", string score = "666")
+    public void LogoutUser()
     {
-        StartCoroutine(DoUploadScore(caller,username,score));
+        loggedUser = null;
     }
 
+    /**
+     * LOGIN USER
+    **/
+    public void LoginUser(ILeaderBoardCaller caller, string username = "", string password = "")
+    {
+        StartCoroutine(DoLoginUser(caller,username,password));
+    }
 
-    IEnumerator DoUploadScore(ILeaderBoardCaller caller, string username = "unknown", string score = "666")
+    IEnumerator DoLoginUser(ILeaderBoardCaller caller, string username = "", string password = "")
     {
         WWWForm form = new WWWForm();
         form.AddField("username", username);
-        form.AddField("score", score);
+        form.AddField("password", password);
 
-        UnityWebRequest download = UnityWebRequest.Post(API_URL + "save", form);
+        UnityWebRequest webRequest = UnityWebRequest.Post(API_URL + "usr/login", form);
+        yield return webRequest.SendWebRequest();
 
-        yield return download.SendWebRequest();
-
-
-        if (download.isNetworkError)
+        if (webRequest.isNetworkError)
         {
-            Debug.LogError("Error posting: " + download.error);
+            Debug.LogError("Error posting: " + webRequest.error);
 
             LeaderBoardResponse apiResponse = new LeaderBoardResponse();
             apiResponse.status = "KO";
             apiResponse.code = "UPLOAD-HTTP-ERROR";
-            apiResponse.message = download.error;
+            apiResponse.message = webRequest.error;
             caller.ReturnLeaderboardCallback(apiResponse);
         }
         else
         {
-            LeaderBoardResponse apiResponse = JsonUtility.FromJson<LeaderBoardResponse>(download.downloadHandler.text);
+            LeaderBoardResponse apiResponse = JsonUtility.FromJson<LeaderBoardResponse>(webRequest.downloadHandler.text);
+            if(apiResponse.status == "OK")
+            {
+                loggedUser = apiResponse.userData;
+            }
+            else
+            {
+                loggedUser = null;
+            }
             caller.ReturnLeaderboardCallback(apiResponse);
         }
     }
 
 
+    /**
+     * REGISTER USER
+    **/
+    public void RegisterUser(ILeaderBoardCaller caller, string username = "", string password = "", string passwordRepeat = "", string email = "", string emailRepeat = "")
+    {
+        StartCoroutine(DoRegisterUser(caller, username, password, passwordRepeat, email, emailRepeat));
+    }
+
+    IEnumerator DoRegisterUser(ILeaderBoardCaller caller, string username = "", string password = "", string passwordRepeat = "", string email = "", string emailRepeat = "")
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("username", username);
+        form.AddField("password", password);
+        form.AddField("password_repeat", passwordRepeat);
+        form.AddField("email", email);
+        form.AddField("email_repeat", emailRepeat);
+
+        UnityWebRequest webRequest = UnityWebRequest.Post(API_URL + "usr/save", form);
+        yield return webRequest.SendWebRequest();
+
+        if (webRequest.isNetworkError)
+        {
+            Debug.LogError("Error posting: " + webRequest.error);
+
+            LeaderBoardResponse apiResponse = new LeaderBoardResponse();
+            apiResponse.status = "KO";
+            apiResponse.code = "UPLOAD-HTTP-ERROR";
+            apiResponse.message = webRequest.error;
+            caller.ReturnLeaderboardCallback(apiResponse);
+        }
+        else
+        {
+            LeaderBoardResponse apiResponse = JsonUtility.FromJson<LeaderBoardResponse>(webRequest.downloadHandler.text);
+            caller.ReturnLeaderboardCallback(apiResponse);
+        }
+    }
+
+
+    /**
+     * UPLOAD SCORE
+    **/
+    public void UploadScore(ILeaderBoardCaller caller, string score = "666")
+    {
+        StartCoroutine(DoUploadScore(caller,score));
+    }
+
+    IEnumerator DoUploadScore(ILeaderBoardCaller caller, string score = "666")
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("score", score);
+
+        UnityWebRequest webRequest = UnityWebRequest.Post(API_URL + "ldb/save", form);
+        webRequest.SetRequestHeader("username", loggedUser.username);
+        webRequest.SetRequestHeader("x-ldb-token", loggedUser.token);
+        yield return webRequest.SendWebRequest();
+        
+        if (webRequest.isNetworkError)
+        {
+            Debug.LogError("Error posting: " + webRequest.error);
+
+            LeaderBoardResponse apiResponse = new LeaderBoardResponse();
+            apiResponse.status = "KO";
+            apiResponse.code = "UPLOAD-HTTP-ERROR";
+            apiResponse.message = webRequest.error;
+            caller.ReturnLeaderboardCallback(apiResponse);
+        }
+        else
+        {
+            LeaderBoardResponse apiResponse = JsonUtility.FromJson<LeaderBoardResponse>(webRequest.downloadHandler.text);
+            caller.ReturnLeaderboardCallback(apiResponse);
+        }
+    }
+
+    /**
+     * RETRIEVE LEADERBOARD
+    **/
     public void RetrieveList(ILeaderBoardCaller caller, string limit = "50", string offset = "0", string order = "DESC")
     {
-        if (limit == "")
-            limit = "50";
-
-        if (offset == "")
-            offset = "0";
-
-        if (order == "")
-            order = "DESC";
-
         StartCoroutine(DoRetrieveList(caller, limit, offset, order));
     }
 
@@ -76,10 +158,10 @@ public class LeaderBoardApiClient : MonoBehaviour
     {
         string queryString = "?limit="+limit+"&offset="+offset+"&order="+order;
 
-        Debug.Log(API_URL + queryString);
-
-        var webRequest = UnityWebRequest.Get(API_URL + queryString);
-
+        Debug.Log("url requested: "+API_URL + "ldb" + queryString);
+        UnityWebRequest webRequest = UnityWebRequest.Get(API_URL + "ldb" + queryString);
+        webRequest.SetRequestHeader("username", loggedUser.username);
+        webRequest.SetRequestHeader("x-ldb-token", loggedUser.token);
         yield return webRequest.SendWebRequest();
         LeaderBoardResponse apiResponse = new LeaderBoardResponse();
 

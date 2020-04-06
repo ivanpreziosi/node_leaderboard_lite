@@ -132,7 +132,7 @@ router.post('/login',
       .notEmpty().withMessage('is required')
       .bail()
       .isLength({ min: 3, max: 50 })
-      .withMessage('must be at least 3 chars long and not longer than 50 chars'),
+      .withMessage('Wrong login credentials'),
 
     //password
     body('password')
@@ -141,7 +141,7 @@ router.post('/login',
       .notEmpty().withMessage('is required')
       .bail()
       .isLength({ min: 6, max: 50 })
-      .withMessage('must be at least 6 chars long and not longer than 50 chars'),
+      .withMessage('Wrong login credentials'),
 
   ],
   function (req, res, next) {
@@ -153,16 +153,7 @@ router.post('/login',
 
       console.log(JSON.stringify(errors));
 
-      var errorString = "Errors: ";
-      var isFirst = true;
-      errors.array().forEach(element => {
-        if (!isFirst) {
-          errorString += " - ";
-        }
-        errorString += element.param + ": " + element.msg;
-        isFirst = false;
-      });
-
+      var errorString = "Wrong login credentials";
       //create 400 http error code: Bad Request
       next(createError(400, errorString));
 
@@ -184,7 +175,7 @@ router.post('/login',
         } else {
 
           if (result.length != 1) {
-            next(new Error('User not found.'))
+            next(new Error('Wrong login credentials'))
           } else {
 
             var salt = "asdasdjhaslkdsàsdflsfj9sdfhjksd/(&%/(&_874hcdcchui32bj3sc98csd_-sdhfj!*£%&";
@@ -203,7 +194,7 @@ router.post('/login',
                   status: "OK",
                   message: "User logged in successfully",
                   code: "LEADERBOARD-USER-LOGIN-SUCCESS",
-                  payload: {
+                  userData: {
                     "username": username,
                     "token": token
                   }
