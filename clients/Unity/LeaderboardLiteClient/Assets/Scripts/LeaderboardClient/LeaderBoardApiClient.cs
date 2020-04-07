@@ -27,6 +27,7 @@ public class LeaderBoardApiClient : MonoBehaviour
 
     public void LogoutUser()
     {
+        //dobbiamo aggiungere una chiamata alle API per notificare il logout e cancellare il token!
         loggedUser = null;
     }
 
@@ -114,12 +115,12 @@ public class LeaderBoardApiClient : MonoBehaviour
     /**
      * UPLOAD SCORE
     **/
-    public void UploadScore(ILeaderBoardCaller caller, string score = "666")
+    public void UploadScore(ILeaderBoardCaller caller, string score = "0")
     {
         StartCoroutine(DoUploadScore(caller,score));
     }
 
-    IEnumerator DoUploadScore(ILeaderBoardCaller caller, string score = "666")
+    IEnumerator DoUploadScore(ILeaderBoardCaller caller, string score = "0")
     {
         WWWForm form = new WWWForm();
         form.AddField("score", score);
