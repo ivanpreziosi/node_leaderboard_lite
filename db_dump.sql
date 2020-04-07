@@ -19,13 +19,15 @@ USE `node_leaderboard_lite`;
 -- Dump della struttura di tabella node_leaderboard_lite.leaderboard
 CREATE TABLE IF NOT EXISTS `leaderboard` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL DEFAULT 'Unknown',
+  `user_id` int(10) unsigned NOT NULL,
   `score` int(10) unsigned NOT NULL,
   `save_date` datetime NOT NULL DEFAULT current_timestamp(),
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
   `sender_ip` varchar(50) NOT NULL DEFAULT 'Unknown',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `fk_leaderboard_user` (`user_id`),
+  CONSTRAINT `fk_leaderboard_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -42,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- L’esportazione dei dati non era selezionata.
 
