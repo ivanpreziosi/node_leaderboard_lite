@@ -11,7 +11,11 @@ var app = express();
 // middleware parsing body of the post form data
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
-app.use('/ldb',function (req, res, next) {
+app.use(['/ldb'],function (req, res, next) {
+  Auth.checkAuth(req, res, next);
+});
+
+app.use('/usr/logout',function (req, res, next) {
   Auth.checkAuth(req, res, next);
 });
 

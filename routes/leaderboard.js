@@ -5,38 +5,6 @@ const { body, query, header, validationResult } = require('express-validator');
 var validator = require('validator');
 
 
-/* LOGOUT FROM APP */
-router.get('/logout', function (req, res, next) {
-
-  var hUsername = req.header('username');
-  var hToken = req.header('x-ldb-token');
-
-  var con = require('../app_modules/DBConnection');
-  var sqlUpdate = "UPDATE `node_leaderboard_lite`.`user` SET `auth_token`= NULL, token_creation_date = NULL WHERE `username`= ? AND  `auth_token`= ?";
-
-  con.query(sqlUpdate, [hUsername,hToken], function (query_err, result, fields) {
-
-    if (query_err) {
-      console.log("ERR")
-      next(query_err);
-    } else {
-      console.log('affected ' + result.affectedRows + ' rows');
-
-      var userResponse = {
-        status: "OK",
-        message: "User logged out successfully",
-        code: "LEADERBOARD-USER-LOGOUT-SUCCESS",
-        fields: fields
-      }
-
-      //write to result object
-      res.writeHead(200, { 'Content-Type': 'text/json' });
-      res.write(JSON.stringify(userResponse));
-      res.end();
-    }
-  });
-
-});
 
 /* GET score listing. */
 router.get('/',

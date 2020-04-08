@@ -32,7 +32,7 @@ public class LeaderBoardApiClient : MonoBehaviour
 
     IEnumerator DoLogoutUser(ILeaderBoardCaller caller)
     {
-        UnityWebRequest webRequest = UnityWebRequest.Get(API_URL + "ldb/logout");
+        UnityWebRequest webRequest = UnityWebRequest.Get(API_URL + "usr/logout");
         webRequest.SetRequestHeader("username", loggedUser.username);
         webRequest.SetRequestHeader("x-ldb-token", loggedUser.token);
         yield return webRequest.SendWebRequest();
