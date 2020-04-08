@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
-  `password` char(32) NOT NULL DEFAULT '',
+  `password` char(32) NOT NULL,
   `email` varchar(60) NOT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
   `date_subscribed` datetime NOT NULL DEFAULT current_timestamp(),

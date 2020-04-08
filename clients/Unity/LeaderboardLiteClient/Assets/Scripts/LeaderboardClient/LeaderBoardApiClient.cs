@@ -25,10 +25,34 @@ public class LeaderBoardApiClient : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void LogoutUser()
+    public void LogoutUser(ILeaderBoardCaller caller)
     {
-        //dobbiamo aggiungere una chiamata alle API per notificare il logout e cancellare il token!
+        StartCoroutine(DoLogoutUser(caller));
+    }
+
+    IEnumerator DoLogoutUser(ILeaderBoardCaller caller)
+    {
+        UnityWebRequest webRequest = UnityWebRequest.Get(API_URL + "ldb/logout");
+        webRequest.SetRequestHeader("username", loggedUser.username);
+        webRequest.SetRequestHeader("x-ldb-token", loggedUser.token);
+        yield return webRequest.SendWebRequest();
+        LeaderBoardResponse apiResponse = new LeaderBoardResponse();
+
+        if (webRequest.isNetworkError)
+        {
+            apiResponse.status = "KO";
+            apiResponse.code = "RETRIEVE-NETWORK-ERROR";
+            apiResponse.message = webRequest.error;
+        }
+        else
+        {
+            string jsonData = webRequest.downloadHandler.text;
+            apiResponse = JsonUtility.FromJson<LeaderBoardResponse>(jsonData);
+
+        }
+
         loggedUser = null;
+        caller.ReturnLeaderboardCallback(apiResponse);
     }
 
     /**
