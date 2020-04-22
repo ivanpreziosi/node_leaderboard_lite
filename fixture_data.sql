@@ -1,9 +1,0 @@
-INSERT INTO `leaderboard` (`id`, `username`, `score`, `save_date`, `is_deleted`, `sender_ip`) VALUES (1, 'asdasd', 1000, '2020-03-16 11:59:08', 0, 'Unknown');
-INSERT INTO `leaderboard` (`id`, `username`, `score`, `save_date`, `is_deleted`, `sender_ip`) VALUES (2, '1qweqw', 2000, '2020-03-16 11:59:08', 0, 'Unknown');
-INSERT INTO `leaderboard` (`id`, `username`, `score`, `save_date`, `is_deleted`, `sender_ip`) VALUES (3, 'sfwe', 340, '2020-03-16 11:59:08', 0, 'Unknown');
-INSERT INTO `leaderboard` (`id`, `username`, `score`, `save_date`, `is_deleted`, `sender_ip`) VALUES (4, 'wefwe', 3765, '2020-03-16 11:59:08', 0, 'Unknown');
-INSERT INTO `leaderboard` (`id`, `username`, `score`, `save_date`, `is_deleted`, `sender_ip`) VALUES (5, 'wefwef', 5000, '2020-03-16 11:59:08', 0, 'Unknown');
-INSERT INTO `leaderboard` (`id`, `username`, `score`, `save_date`, `is_deleted`, `sender_ip`) VALUES (11, 'TEST', 100, '2020-03-16 14:11:04', 0, 'Unknown');
-INSERT INTO `leaderboard` (`id`, `username`, `score`, `save_date`, `is_deleted`, `sender_ip`) VALUES (12, 'asdasd', 324, '2020-03-16 14:14:55', 0, 'Unknown');
-INSERT INTO `leaderboard` (`id`, `username`, `score`, `save_date`, `is_deleted`, `sender_ip`) VALUES (13, 'iwan', 32423, '2020-03-16 14:17:06', 0, 'Unknown');
-INSERT INTO `leaderboard` (`id`, `username`, `score`, `save_date`, `is_deleted`, `sender_ip`) VALUES (14, 'iwan', 23432, '2020-03-16 14:30:49', 0, 'Unknown');
