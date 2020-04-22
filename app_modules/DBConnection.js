@@ -1,11 +1,10 @@
 var mysql = require('mysql');
 
-//local mysql db connection
 var connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : 'root',
-    database : 'node_leaderboard_lite'
+    host     : process.env.DBHOST,
+    user     : process.env.DBUSER,
+    password : process.env.DBPWD,
+    database : process.env.DBNAME
 });
 
 connection.connect(function(err) {
