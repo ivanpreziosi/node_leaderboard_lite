@@ -8,7 +8,7 @@ var md5 = require('js-md5');
 router.get('/logout', function (req, res, next) {
 
   var hUsername = req.header('username');
-  var hToken = req.header('x-ldb-token');
+  var hToken = req.header(process.env.TOKENNAME||"x-ldb-token");
 
   var con = require('../app_modules/DBConnection');
   var sqlUpdate = "UPDATE `node_leaderboard_lite`.`user` SET `auth_token`= NULL, token_creation_date = NULL WHERE `username`= ? AND  `auth_token`= ?";
@@ -198,7 +198,7 @@ router.post('/login',
       var password = req.body.password;
 
       var con = require('../app_modules/DBConnection');
-      var sql = "SELECT * FROM `user` WHERE username = ? AND password = ? LIMIT 1";
+      var sql = "SELECT * FROM `user` WHERE username = ? AND password = ? AND is_deleted = 0 LIMIT 1";
 
       con.query(sql, [username, md5(password)], function (query_err, result, fields) {
 
@@ -211,7 +211,7 @@ router.post('/login',
             next(new Error('Wrong login credentials'))
           } else {
 
-            var salt = "asdasdjhaslkdsàsdflsfj9sdfhjksd/(&%/(&_874hcdcchui32bj3sc98csd_-sdhfj!*£%&";
+            var salt = process.env.HASHSALT||"default_sad_salt";
             var token = md5(result[0].username + salt + result[0].password + salt + result[0].date_subscribed + Date());
 
             var sqlUpdate = "UPDATE `node_leaderboard_lite`.`user` SET `auth_token`=? WHERE  `id`=" + result[0].id;

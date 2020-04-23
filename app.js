@@ -1,4 +1,5 @@
-require('dotenv').config();
+const envConfig = require('dotenv').config();
+
 var createError = require('http-errors');
 var express = require('express');
 
@@ -11,6 +12,14 @@ var app = express();
 
 // middleware parsing body of the post form data
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+
+app.use(function(req,res,next){
+  if (envConfig.error) {
+    next(createError(500,envConfig.error)); 
+  }
+  next();
+});
 
 app.use(['/ldb'],function (req, res, next) {
   Auth.checkAuth(req, res, next);
