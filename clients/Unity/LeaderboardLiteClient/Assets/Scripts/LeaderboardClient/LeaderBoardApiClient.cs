@@ -9,7 +9,7 @@ public class LeaderBoardApiClient : MonoBehaviour
 
     public UserData loggedUser;
 
-    public const string API_URL = "http://node-leaderboard-lite.glitch.me/";
+    public const string API_URL = "http://localhost:1312/";
 
     void Awake()
     {
