@@ -25,7 +25,7 @@ exports.checkAuth = async function (request, response, next) {
             console.log("ERR")
             next(query_err);
           } else {
-            console.log('auth invalid reset token data for user: ' + JSON.stringify(result));
+            console.log('auth invalid. reset token data for user: ' + JSON.stringify(result));
           }
         });
         
@@ -39,7 +39,7 @@ exports.checkAuth = async function (request, response, next) {
             console.log("ERR")
             next(query_err);
           } else {
-            console.log('auth invalid reset token data for user: ' + JSON.stringify(result));
+            console.log('auth valid for user: ' + JSON.stringify(result));
           }
         });
 
