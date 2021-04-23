@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `leaderboard`;
 CREATE TABLE IF NOT EXISTS `leaderboard` (
@@ -25,9 +25,7 @@ CREATE TABLE IF NOT EXISTS `leaderboard` (
   `save_date` datetime NOT NULL DEFAULT current_timestamp(),
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
   `sender_ip` varchar(50) NOT NULL DEFAULT 'Unknown',
-  PRIMARY KEY (`id`),
-  KEY `fk_leaderboard_user` (`user_id`),
-  CONSTRAINT `fk_leaderboard_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
