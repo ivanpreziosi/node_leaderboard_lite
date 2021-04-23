@@ -9,7 +9,7 @@ public class LeaderBoardApiClient : MonoBehaviour
 
     public UserData loggedUser;
 
-    public const string API_URL = "http://localhost:1312/";
+    public const string API_URL = "https://rest-leaderboard-lite.glitch.me/";
 
     void Awake()
     {
