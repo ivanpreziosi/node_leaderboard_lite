@@ -4,7 +4,7 @@ var createError = require('http-errors');
 const { body, query, validationResult } = require('express-validator');
 var validator = require('validator');
 
-
+var con = require('../app_modules/DBConnection');
 
 /* GET score listing. */
 router.get('/', [ //express-validator rules stack
@@ -22,7 +22,7 @@ router.get('/', [ //express-validator rules stack
     ],
     function(req, res, next) {
 
-        var con = require('../app_modules/DBConnection');
+
 
         //GET PARAM in query string
         var limit = req.query.limit;
@@ -126,7 +126,7 @@ router.post('/save', [ //express-validator rules stack
 
             var score = req.body.score;
 
-            var con = require('../app_modules/DBConnection');
+
             var sql = "INSERT INTO `leaderboard` (`user_id`, `score`) VALUES ((SELECT id FROM user WHERE username = ? AND auth_token = ?),?);";
 
             con.query(sql, [hUsername, hToken, score], function(query_err, result, fields) {

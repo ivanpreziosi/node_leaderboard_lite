@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 
+var con = require('../app_modules/DBConnection');
 
 exports.checkAuth = function(request, response, next) {
 
@@ -7,7 +8,7 @@ exports.checkAuth = function(request, response, next) {
     var hToken = request.header(process.env.TOKENNAME || "x-ldb-token");
     var sessionLifetime = (process.env.SESSLIFETIME || 25); //session lifetime in minutes (defaults to 25)
 
-    var con = require('../app_modules/DBConnection');
+
     var sql = "SELECT id FROM `user` WHERE username = ? AND auth_token = ? AND TIMESTAMPDIFF(MINUTE,token_creation_date,CURRENT_TIMESTAMP) < " + sessionLifetime + " AND is_deleted = 0 LIMIT 1";
 
     con.query(sql, [hUsername, hToken], function(query_err, result, fields) {
