@@ -1,7 +1,7 @@
 var createError = require('http-errors');
 
 
-exports.checkAuth = async function(request, response, next) {
+exports.checkAuth = function(request, response, next) {
 
     var hUsername = request.header('username');
     var hToken = request.header(process.env.TOKENNAME || "x-ldb-token");

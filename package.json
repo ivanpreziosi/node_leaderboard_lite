@@ -1,16 +1,16 @@
 {
-  "name": "node_leaderboard_lite",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node ./bin/www"
-  },
-  "dependencies": {
-    "dotenv": "^8.2.0",
-    "express": "~4.16.1",
-    "express-validator": "^6.4.0",
-    "http-errors": "~1.6.3",
-    "js-md5": "^0.7.3",
-    "mysql": "^2.18.1"
-  }
+    "name": "node_leaderboard_lite",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "start": "node ./app"
+    },
+    "dependencies": {
+        "dotenv": "^8.2.0",
+        "express": "~4.16.1",
+        "express-validator": "^6.4.0",
+        "http-errors": "~1.6.3",
+        "js-md5": "^0.7.3",
+        "mysql": "^2.18.1"
+    }
 }

@@ -3,6 +3,8 @@ const envConfig = require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 
+var port = process.env.PORT || 8080;
+
 var Auth = require('./app_modules/AuthModule');
 
 var leaderboardRouter = require('./routes/leaderboard');
@@ -21,13 +23,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(['/ldb'], function(req, res, next) {
-    Auth.checkAuth(req, res, next);
-});
-
-app.use('/usr/logout', function(req, res, next) {
-    Auth.checkAuth(req, res, next);
-});
+app.use(['/ldb', '/usr/logout'], Auth.checkAuth);
 
 //catch all calls to ldb and send them to leaderboard router!!
 app.use('/ldb', leaderboardRouter);
@@ -58,4 +54,6 @@ app.use(function(err, req, res, next) {
 
 });
 
-module.exports = app;
+app.listen(port, function() {
+    console.log('HI! The leaderboard server is listening on ' + port);
+});
