@@ -208,7 +208,7 @@ router.post('/login', [ //express-validator rules stack
                 } else {
 
                     if (result.length != 1) {
-                        next(new Error('Wrong login credentials'))
+                        next(createError(403, 'Authentication error.'));
                     } else {
 
                         var salt = process.env.HASHSALT || "default_sad_salt";
