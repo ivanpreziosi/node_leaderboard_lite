@@ -1,5 +1,8 @@
 ﻿
-public interface ILeaderBoardCaller
+namespace RadFic.LeaderboardClient
 {
-    void ReturnLeaderboardCallback(LeaderBoardResponse response);
+    public interface ILeaderBoardCaller
+    {
+        void ReturnLeaderboardCallback(LeaderBoardResponse response);
+    }
 }
